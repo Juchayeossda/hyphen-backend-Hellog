@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"hyphen-backend-hellog/cerrors"
 	"hyphen-backend-hellog/model"
+	"hyphen-backend-hellog/verifier"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -65,6 +66,9 @@ func RegisterImage(image []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	// 유효성 검사
+	verifier.Validate(respJSON)
 
 	// 응답 처리
 
