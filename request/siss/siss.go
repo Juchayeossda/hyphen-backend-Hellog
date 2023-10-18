@@ -81,5 +81,5 @@ func RegisterImage(image *multipart.FileHeader) (string, error) {
 		return "", &cerrors.ReqeustFailedError{ErrorMessage: respJSON.Message}
 	}
 
-	return respJSON.Data.ID, nil
+	return "http://101.101.217.155:8083/api/siss/images/" + respJSON.Data.ID, nil
 }
