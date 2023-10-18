@@ -14,7 +14,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func NewDatabse(c Component) *ent.Client {
+func NewDatabase(c Component) *ent.Client {
 	username := c.Get("DATASOURCE_USERNAME")
 	password := c.Get("DATASOURCE_PASSWORD")
 	host := c.Get("DATASOURCE_HOST")
