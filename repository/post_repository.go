@@ -45,9 +45,7 @@ func (r *IPostRepository) UpdateByID(ctx context.Context, id int, title string, 
 		SetUpdatedAt(time.Now())
 
 	if author != nil {
-		return updatePost.
-			SetAuthor(author).
-			Save(ctx)
+		updatePost.SetAuthor(author)
 	}
 
 	return updatePost.Save(ctx)

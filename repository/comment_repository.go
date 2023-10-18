@@ -4,6 +4,7 @@ import (
 	"context"
 	"hyphen-backend-hellog/ent"
 	"hyphen-backend-hellog/ent/comment"
+	"time"
 )
 
 type CommentRepository interface {
@@ -48,4 +49,29 @@ func (r *ICommentRepository) QueryChilds(ctx context.Context, parent *ent.Commen
 
 func (r *ICommentRepository) QueryParentsByPost(ctx context.Context, post *ent.Post) ([]*ent.Comment, error) {
 	return post.QueryComments().Where(comment.Not(comment.HasParent())).All(ctx)
+}
+
+func (r *ICommentRepository) UpdateByID(ctx context.Context, id int, content string, post *ent.Post, author *ent.User, parent *ent.Comment) (*ent.Comment, error) {
+	updateComment := r.client.Comment.UpdateOneID(id).
+		SetContent(content).
+		SetUpdatedAt(time.Now())
+
+	if post != nil {
+		updateComment.SetPost(post)
+	}
+
+	if author != nil {
+		updateComment.SetAuthor(author)
+	}
+
+	if parent != nil {
+		updateComment.SetParent(parent)
+	}
+
+	return updateComment.Save(ctx)
+}
+
+func (r *ICommentRepository) DeleteByID(ctx context.Context, id int) error {
+	return r.client.Comment.DeleteOneID(id).
+		Exec(ctx)
 }
