@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"hyphen-backend-hellog/ent"
+	"time"
 )
 
 type PostRepository interface {
@@ -40,7 +41,8 @@ func (r *IPostRepository) UpdateByID(ctx context.Context, id int, title string, 
 		SetTitle(title).
 		SetContent(content).
 		SetPreviewImage(previewImage).
-		SetIsPrivate(isPrivate)
+		SetIsPrivate(isPrivate).
+		SetUpdatedAt(time.Now())
 
 	if author != nil {
 		return updatePost.
