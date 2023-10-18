@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"hyphen-backend-hellog/ent"
+	"time"
 )
 
 type UserRepository interface {
@@ -38,6 +39,7 @@ func (r *IUserRepository) UpdateByID(ctx context.Context, id int, idFromUserMS i
 		SetIDFromUserMs(idFromUserMS).
 		SetName(name).
 		SetProfileImage(profileImage).
+		SetUpdatedAt(time.Now()).
 		Save(ctx)
 }
 
