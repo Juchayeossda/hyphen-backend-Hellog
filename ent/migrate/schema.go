@@ -78,6 +78,7 @@ var (
 		{Name: "name", Type: field.TypeString, Unique: true, Size: 12},
 		{Name: "profile_image", Type: field.TypeString, Unique: true, Size: 64},
 		{Name: "joined_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{

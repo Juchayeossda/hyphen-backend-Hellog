@@ -142,4 +142,8 @@ func init() {
 	userDescJoinedAt := userFields[3].Descriptor()
 	// user.DefaultJoinedAt holds the default value on creation for the joined_at field.
 	user.DefaultJoinedAt = userDescJoinedAt.Default.(func() time.Time)
+	// userDescUpdatedAt is the schema descriptor for updated_at field.
+	userDescUpdatedAt := userFields[4].Descriptor()
+	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
 }

@@ -32,6 +32,9 @@ func (User) Fields() []ent.Field {
 
 		field.Time("joined_at").
 			Default(time.Now),
+
+		field.Time("updated_at").
+			Default(time.Now),
 	}
 }
 

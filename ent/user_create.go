@@ -54,6 +54,20 @@ func (uc *UserCreate) SetNillableJoinedAt(t *time.Time) *UserCreate {
 	return uc
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (uc *UserCreate) SetUpdatedAt(t time.Time) *UserCreate {
+	uc.mutation.SetUpdatedAt(t)
+	return uc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (uc *UserCreate) SetNillableUpdatedAt(t *time.Time) *UserCreate {
+	if t != nil {
+		uc.SetUpdatedAt(*t)
+	}
+	return uc
+}
+
 // AddPostIDs adds the "posts" edge to the Post entity by IDs.
 func (uc *UserCreate) AddPostIDs(ids ...int) *UserCreate {
 	uc.mutation.AddPostIDs(ids...)
@@ -123,6 +137,10 @@ func (uc *UserCreate) defaults() {
 		v := user.DefaultJoinedAt()
 		uc.mutation.SetJoinedAt(v)
 	}
+	if _, ok := uc.mutation.UpdatedAt(); !ok {
+		v := user.DefaultUpdatedAt()
+		uc.mutation.SetUpdatedAt(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -153,6 +171,9 @@ func (uc *UserCreate) check() error {
 	}
 	if _, ok := uc.mutation.JoinedAt(); !ok {
 		return &ValidationError{Name: "joined_at", err: errors.New(`ent: missing required field "User.joined_at"`)}
+	}
+	if _, ok := uc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "User.updated_at"`)}
 	}
 	return nil
 }
@@ -195,6 +216,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.JoinedAt(); ok {
 		_spec.SetField(user.FieldJoinedAt, field.TypeTime, value)
 		_node.JoinedAt = value
+	}
+	if value, ok := uc.mutation.UpdatedAt(); ok {
+		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
 	}
 	if nodes := uc.mutation.PostsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
