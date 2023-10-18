@@ -11,22 +11,26 @@ import (
 	"net/http"
 )
 
-func RegisterImage(image []byte) (string, error) {
-
-	// net/http package를 이용해서 siss서버에 요청
-
+func RegisterImage(image *multipart.FileHeader) (string, error) {
 	// request body 설정하는 방법
 	var requestBody bytes.Buffer
 	multipartWriter := multipart.NewWriter(&requestBody)
 
-	// file filed 설정
+	// file field 설정
 	part, err := multipartWriter.CreateFormFile("image", "image.txt")
 	if err != nil {
 		return "", err
 	}
 
-	// 파일 데이터를 MultiPart Form 데이터에 쓰기
-	_, err = part.Write(image)
+	// 업로드된 이미지 파일을 열기
+	file, err := image.Open()
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	// 파일 데이터를 MultiPart Form 데이터에 복사
+	_, err = io.Copy(part, file)
 	if err != nil {
 		return "", err
 	}
