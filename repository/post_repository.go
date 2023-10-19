@@ -37,7 +37,7 @@ func (r *IPostRepository) QueryByID(ctx context.Context, id int) (*ent.Post, err
 
 func (r *IPostRepository) UpdateByID(ctx context.Context, id int, title string, content string, previewImage string, isPrivate bool, author *ent.User) (*ent.Post, error) {
 
-	updatePost := r.client.Post.UpdateOneID(1).
+	updatePost := r.client.Post.UpdateOneID(id).
 		SetTitle(title).
 		SetContent(content).
 		SetPreviewImage(previewImage).

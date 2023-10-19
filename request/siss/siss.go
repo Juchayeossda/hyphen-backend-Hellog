@@ -11,6 +11,8 @@ import (
 	"net/http"
 )
 
+var serverURL = "http://101.101.217.155:8083/api/siss/images/"
+
 func RegisterImage(image *multipart.FileHeader) (string, error) {
 	// request body 설정하는 방법
 	var requestBody bytes.Buffer
@@ -65,7 +67,7 @@ func RegisterImage(image *multipart.FileHeader) (string, error) {
 	}
 
 	// json Unmarshal
-	respJSON := new(model.SISS)
+	respJSON := new(model.GetSISS)
 	err = json.Unmarshal(respBody, respJSON)
 	if err != nil {
 		return "", err
@@ -81,5 +83,47 @@ func RegisterImage(image *multipart.FileHeader) (string, error) {
 		return "", &cerrors.ReqeustFailedError{ErrorMessage: respJSON.Message}
 	}
 
-	return "http://101.101.217.155:8083/api/siss/images/" + respJSON.Data.ID, nil
+	return serverURL + respJSON.Data.ID, nil
+}
+
+func RemoveImage(image string) error {
+
+	var requestBody bytes.Buffer
+
+	// HTTP POST 요청 만들기
+	targetURL := image
+	req, err := http.NewRequest("DELETE", targetURL, &requestBody)
+
+	// HTTP 클라이언트 생성
+	client := &http.Client{}
+
+	// 요청 보내기
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// body parsing
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	// json Unmarshal
+	respJSON := new(model.DeleteSISS)
+	err = json.Unmarshal(respBody, respJSON)
+	if err != nil {
+		return err
+	}
+
+	// 유효성 검사
+	verifier.Validate(respJSON)
+
+	// 응답에 실패했으면
+	if respJSON.Code != 200 {
+		return cerrors.ReqeustFailedError{ErrorMessage: respJSON.Message}
+	}
+
+	return nil
 }

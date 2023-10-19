@@ -5,7 +5,15 @@ import (
 	"time"
 )
 
-type PostCreateUpdate struct {
+type PostCreate struct {
+	Title        string                `form:"title"  validate:"required"`
+	Content      string                `form:"content" validate:"required"`
+	PreviewImage *multipart.FileHeader `form:"preview_image" validate:"required"`
+	IsPrivate    bool                  `form:"is_private" validate:"boolean"`
+}
+
+type PostUpdate struct {
+	PostID       int                   `validate:"required"`
 	Title        string                `form:"title"  validate:"required"`
 	Content      string                `form:"content" validate:"required"`
 	PreviewImage *multipart.FileHeader `form:"preview_image" validate:"required"`

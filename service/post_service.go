@@ -11,8 +11,9 @@ import (
 )
 
 type PostService interface {
-	Create(ctx context.Context, m *model.PostCreateUpdate)
+	Create(ctx context.Context, m *model.PostCreate)
 	SelectByID(ctx context.Context, m *model.PostSelecByID) *model.PostSelectByIDReturn
+	Update(ctx context.Context, m *model.PostUpdate)
 }
 
 func NewPostRepository(postRepo repository.PostRepository, userRepo repository.UserRepository, commentRepo repository.CommentRepository) PostService {
@@ -25,7 +26,7 @@ type IPostService struct {
 	repository.CommentRepository
 }
 
-func (s *IPostService) Create(ctx context.Context, m *model.PostCreateUpdate) {
+func (s *IPostService) Create(ctx context.Context, m *model.PostCreate) {
 	verifier.Validate(m)
 
 	previewImage, err := siss.RegisterImage(m.PreviewImage)
@@ -43,8 +44,6 @@ func (s *IPostService) Create(ctx context.Context, m *model.PostCreateUpdate) {
 		panic(cerrors.NotCreateError{ErrorMessage: err.Error()})
 	}
 }
-
-func CreateComment() {}
 
 func (s *IPostService) SelectByID(ctx context.Context, m *model.PostSelecByID) *model.PostSelectByIDReturn {
 	verifier.Validate(m)
@@ -78,8 +77,33 @@ func (s *IPostService) SelectByID(ctx context.Context, m *model.PostSelecByID) *
 	return &returnModel
 
 }
-func SelectPostComments()                                                     {}
-func (s *IPostService) Update(ctx context.Context, m *model.PostCreateUpdate) {}
-func UpdateComment()                                                          {}
-func (s *IPostService) Delete(ctx context.Context, m *model.PostDelete)       {}
-func DleteComment()                                                           {}
+
+func (s *IPostService) Update(ctx context.Context, m *model.PostUpdate) {
+	verifier.Validate(m)
+
+	prevPost, err := s.PostRepository.QueryByID(ctx, m.PostID)
+	if err != nil {
+		panic(cerrors.NotCreateError{ErrorMessage: err.Error()})
+	}
+
+	err = siss.RemoveImage(prevPost.PreviewImage)
+	if err != nil {
+		panic(cerrors.ReqeustFailedError{ErrorMessage: err.Error()})
+	}
+
+	previewImage, err := siss.RegisterImage(m.PreviewImage)
+	if err != nil {
+		panic(cerrors.ReqeustFailedError{ErrorMessage: err.Error()})
+	}
+
+	// TODO: token parsing -> get user id or name
+	author, err := s.UserRepository.QueryByID(ctx, 4 /*toekn id 여기로*/)
+	if err != nil {
+		panic(cerrors.NotFoundError{ErrorMessage: err.Error()})
+	}
+
+	if _, err := s.PostRepository.UpdateByID(ctx, m.PostID, m.Title, m.Content, previewImage, m.IsPrivate, author); err != nil {
+		panic(err)
+	}
+
+}

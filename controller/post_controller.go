@@ -19,11 +19,12 @@ type PostController struct {
 
 func (ctr *PostController) Route(app *fiber.App) {
 	app.Post("/api/hellog/posts/post", ctr.create)
-	app.Get("/api/hellog/posts/:id", ctr.selectByID)
+	app.Get("/api/hellog/posts/:post_id", ctr.selectByID)
+	app.Patch("/api/hellog/posts/:post_id", ctr.update)
 }
 
 func (ctr *PostController) create(c *fiber.Ctx) error {
-	var clientRequest model.PostCreateUpdate
+	var clientRequest model.PostCreate
 
 	// title, content parsing
 	err := c.BodyParser(&clientRequest)
@@ -51,7 +52,7 @@ func (ctr *PostController) selectByID(c *fiber.Ctx) (err error) {
 	var clientRequest model.PostSelecByID
 
 	// id parsing
-	clientRequest.PostID, err = strconv.Atoi(c.Params("id"))
+	clientRequest.PostID, err = strconv.Atoi(c.Params("post_id"))
 	exception.Sniff(err)
 
 	response := ctr.PostService.SelectByID(c.Context(), &clientRequest)
@@ -60,5 +61,33 @@ func (ctr *PostController) selectByID(c *fiber.Ctx) (err error) {
 		Code:    fiber.StatusOK,
 		Message: "Success Created",
 		Data:    response,
+	})
+}
+
+func (ctr *PostController) update(c *fiber.Ctx) (err error) {
+	var clientRequest model.PostUpdate
+
+	// post id parsing
+	clientRequest.PostID, err = strconv.Atoi(c.Params("post_id"))
+	exception.Sniff(err)
+
+	// title, content parsing
+	err = c.BodyParser(&clientRequest)
+	exception.Sniff(err)
+
+	// is_private parsing
+	clientRequest.IsPrivate = c.FormValue("is_private") == "true"
+	exception.Sniff(err)
+
+	// preview_iamge parsing
+	clientRequest.PreviewImage, err = c.FormFile("preview_image")
+	exception.Sniff(err)
+
+	ctr.PostService.Update(c.Context(), &clientRequest)
+
+	return c.Status(fiber.StatusCreated).JSON(model.GeneralResponse{
+		Code:    fiber.StatusCreated,
+		Message: "Success",
+		Data:    nil,
 	})
 }

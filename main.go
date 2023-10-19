@@ -8,6 +8,7 @@ import (
 	"hyphen-backend-hellog/service"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 func main() {
@@ -28,7 +29,7 @@ func main() {
 		ErrorHandler: cerrors.ErrorHandler,
 	})
 
-	// app.Use(recover.New())
+	app.Use(recover.New())
 
 	postCtl.Route(app)
 	commentCtl.Route(app)
