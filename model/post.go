@@ -30,30 +30,9 @@ type Post struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 
-	Author   `json:"author"`
-	Comments []Comment `json:"comments"`
-}
-
-type Comment struct {
-	ID      int    `json:"id"`
-	Content string `json:"content"`
-
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-
-	Author            `json:"author"`
-	CommentOfComments []CommentOfComment `json:"coment_of_comments"`
-}
-
-type CommentOfComment struct {
-	ID      int    `json:"id"`
-	Content string `json:"content"`
-
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-
 	Author `json:"author"`
 }
+
 type Author struct {
 	ID           int    `json:"id"`
 	Name         string `json:"name"`
