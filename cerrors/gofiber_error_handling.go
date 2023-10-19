@@ -41,6 +41,15 @@ func ErrorHandler(ctx *fiber.Ctx, err error) error {
 		})
 	}
 
+	_, notUpdateError := err.(NotUpdateError)
+	if notUpdateError {
+		return ctx.Status(fiber.StatusNotFound).JSON(model.GeneralResponse{
+			Code:    500,
+			Message: "Not create",
+			Data:    err.Error(),
+		})
+	}
+
 	_, requestFailedError := err.(ReqeustFailedError)
 	if requestFailedError {
 		return ctx.Status(fiber.StatusNotFound).JSON(model.GeneralResponse{
