@@ -9,7 +9,7 @@ import (
 
 func TestXxx(t *testing.T) {
 	component := initializer.NewCompnent("../.env")
-	db := initializer.NewDatabse(component)
+	db := initializer.NewDatabase(component)
 
 	userRepo := NewUserRepository(db)
 	// postRepo := NewPostRepository(db)

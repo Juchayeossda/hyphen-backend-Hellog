@@ -29,9 +29,7 @@ func (r *ICommentRepository) Create(ctx context.Context, content string, post *e
 		SetAuthor(author)
 
 	if parent != nil {
-		return comment.
-			SetParent(parent).
-			Save(ctx)
+		comment.SetParent(parent)
 	}
 
 	return comment.

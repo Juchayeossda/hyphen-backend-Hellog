@@ -65,7 +65,7 @@ func RegisterImage(image *multipart.FileHeader) (string, error) {
 	}
 
 	// json Unmarshal
-	respJSON := new(model.SISSImageModel)
+	respJSON := new(model.SISS)
 	err = json.Unmarshal(respBody, respJSON)
 	if err != nil {
 		return "", err

@@ -23,13 +23,15 @@ func (ctr *PostController) Route(app *fiber.App) {
 }
 
 func (ctr *PostController) create(c *fiber.Ctx) error {
-	var clientRequest model.CreateUpdatePost
+	var clientRequest model.PostCreateUpdate
 
 	// title, content parsing
 	err := c.BodyParser(&clientRequest)
+	exception.Sniff(err)
 
 	// is_private parsing
 	clientRequest.IsPrivate = c.FormValue("is_private") == "true"
+	exception.Sniff(err)
 
 	// preview_iamge parsing
 	clientRequest.PreviewImage, err = c.FormFile("preview_image")
@@ -46,7 +48,7 @@ func (ctr *PostController) create(c *fiber.Ctx) error {
 }
 
 func (ctr *PostController) selectByID(c *fiber.Ctx) (err error) {
-	var clientRequest model.SelectPostByID
+	var clientRequest model.PostSelecByID
 
 	// id parsing
 	clientRequest.PostID, err = strconv.Atoi(c.Params("id"))
