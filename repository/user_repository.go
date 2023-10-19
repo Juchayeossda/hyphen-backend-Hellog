@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, idFromUserMS int, name string, profileImage string) (*ent.User, error)
 	QueryByID(ctx context.Context, id int) (*ent.User, error)
+	QueryByPost(ctx context.Context, post *ent.Post) (*ent.User, error)
 	UpdateByID(ctx context.Context, id int, idFromUserMS int, name string, profileImage string) (*ent.User, error)
 	DeleteByID(ctx context.Context, id int) error
 }
@@ -32,6 +33,10 @@ func (r *IUserRepository) Create(ctx context.Context, idFromUserMS int, name str
 
 func (r *IUserRepository) QueryByID(ctx context.Context, id int) (*ent.User, error) {
 	return r.client.User.Get(ctx, id)
+}
+
+func (r *IUserRepository) QueryByPost(ctx context.Context, post *ent.Post) (*ent.User, error) {
+	return post.QueryAuthor().Only(ctx)
 }
 
 func (r *IUserRepository) UpdateByID(ctx context.Context, id int, idFromUserMS int, name string, profileImage string) (*ent.User, error) {
