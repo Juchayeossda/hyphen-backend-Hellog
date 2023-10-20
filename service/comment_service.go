@@ -11,6 +11,7 @@ import (
 type CommentService interface {
 	Create(ctx context.Context, m *model.CommentCreate)
 	SelectByPost(ctx context.Context, m *model.CommentSelectByPost) *model.CommentSelectByPostReturn
+	UpdateByID(ctx context.Context, m *model.CommentUpdateByID)
 }
 
 func NewCommentService(commentRepo repository.CommentRepository, userRepo repository.UserRepository, postRepo repository.PostRepository) CommentService {
@@ -137,4 +138,12 @@ func (s *IPcommentService) SelectByPost(ctx context.Context, m *model.CommentSel
 	}
 
 	return &returnModel
+}
+
+func (s *IPcommentService) UpdateByID(ctx context.Context, m *model.CommentUpdateByID) {
+	verifier.Validate(m)
+
+	if _, err := s.CommentRepository.UpdateByID(ctx, m.CommentID, m.Content); err != nil {
+		panic(cerrors.NotUpdateError{ErrorMessage: err.Error()})
+	}
 }

@@ -14,6 +14,7 @@ type PostService interface {
 	Create(ctx context.Context, m *model.PostCreate)
 	SelectByID(ctx context.Context, m *model.PostSelecByID) *model.PostSelectByIDReturn
 	Update(ctx context.Context, m *model.PostUpdate)
+	DeleteByID(ctx context.Context, m *model.PostDeleteByID)
 }
 
 func NewPostRepository(postRepo repository.PostRepository, userRepo repository.UserRepository, commentRepo repository.CommentRepository) PostService {
@@ -106,4 +107,12 @@ func (s *IPostService) Update(ctx context.Context, m *model.PostUpdate) {
 		panic(err)
 	}
 
+}
+
+func (s *IPostService) DeleteByID(ctx context.Context, m *model.PostDeleteByID) {
+	verifier.Validate(m)
+
+	if err := s.PostRepository.DeleteByID(ctx, m.PostID); err != nil {
+		panic(cerrors.NotUpdateError{ErrorMessage: err.Error()})
+	}
 }

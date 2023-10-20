@@ -19,8 +19,9 @@ type CommentController struct {
 
 func (ctr *CommentController) Route(app *fiber.App) {
 	app.Post("/api/hellog/posts/:post_id/comments/comment", ctr.create)
-	app.Get("/api/hellog/posts/:post_id/comments/comment", ctr.selectByID)
-	// app.Get("/api/hellog/comments/:id", ctr.selectByID)
+	app.Get("/api/hellog/posts/:post_id/comments", ctr.selectByID)
+	app.Patch("/api/hellog/posts/:post_id/comments/comment", ctr.updateByID)
+
 }
 
 func (ctr *CommentController) create(c *fiber.Ctx) error {
@@ -56,5 +57,20 @@ func (ctr *CommentController) selectByID(c *fiber.Ctx) (err error) {
 		Code:    fiber.StatusOK,
 		Message: "Success Created",
 		Data:    response,
+	})
+}
+
+func (ctr *CommentController) updateByID(c *fiber.Ctx) error {
+	var clientRequest model.CommentUpdateByID
+
+	err := c.BodyParser(&clientRequest)
+	exception.Sniff(err)
+
+	ctr.CommentService.UpdateByID(c.Context(), &clientRequest)
+
+	return c.Status(fiber.StatusOK).JSON(model.GeneralResponse{
+		Code:    fiber.StatusOK,
+		Message: "Success Updated",
+		Data:    nil,
 	})
 }

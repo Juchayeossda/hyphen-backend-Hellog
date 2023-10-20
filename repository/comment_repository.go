@@ -12,6 +12,7 @@ type CommentRepository interface {
 	QueryByID(ctx context.Context, id int) (*ent.Comment, error)
 	QueryChilds(ctx context.Context, parent *ent.Comment) ([]*ent.Comment, error)
 	QueryParentsByPost(ctx context.Context, post *ent.Post) ([]*ent.Comment, error)
+	UpdateByID(ctx context.Context, id int, content string) (*ent.Comment, error)
 }
 
 func NewCommentRepository(database *ent.Client) CommentRepository {
@@ -49,24 +50,12 @@ func (r *ICommentRepository) QueryParentsByPost(ctx context.Context, post *ent.P
 	return post.QueryComments().Where(comment.Not(comment.HasParent())).All(ctx)
 }
 
-func (r *ICommentRepository) UpdateByID(ctx context.Context, id int, content string, post *ent.Post, author *ent.User, parent *ent.Comment) (*ent.Comment, error) {
-	updateComment := r.client.Comment.UpdateOneID(id).
+func (r *ICommentRepository) UpdateByID(ctx context.Context, id int, content string) (*ent.Comment, error) {
+	return r.client.Comment.UpdateOneID(id).
 		SetContent(content).
-		SetUpdatedAt(time.Now())
+		SetUpdatedAt(time.Now()).
+		Save(ctx)
 
-	if post != nil {
-		updateComment.SetPost(post)
-	}
-
-	if author != nil {
-		updateComment.SetAuthor(author)
-	}
-
-	if parent != nil {
-		updateComment.SetParent(parent)
-	}
-
-	return updateComment.Save(ctx)
 }
 
 func (r *ICommentRepository) DeleteByID(ctx context.Context, id int) error {

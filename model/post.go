@@ -50,3 +50,7 @@ type Author struct {
 type PostDelete struct {
 	PostID int `json:"post_id"`
 }
+
+type PostDeleteByID struct {
+	PostID int `json:"post_id"`
+}

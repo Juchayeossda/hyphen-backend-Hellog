@@ -8,6 +8,11 @@ type CommentCreate struct {
 	ParentID int    `json:"parent_id"`
 }
 
+type CommentUpdateByID struct {
+	CommentID int    `json:"comment_id"`
+	Content   string `json:"content"`
+}
+
 type CommentSelectByPost struct {
 	PostID int `json:"comment_id"`
 }

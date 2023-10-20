@@ -10,7 +10,7 @@ type PostRepository interface {
 	Create(ctx context.Context, title string, content string, previewImage string, isPrivate bool, author *ent.User) (*ent.Post, error)
 	QueryByID(ctx context.Context, id int) (*ent.Post, error)
 	UpdateByID(ctx context.Context, id int, title string, content string, previewImage string, isPrivate bool, author *ent.User) (*ent.Post, error)
-	DelteByID(ctx context.Context, id int) error
+	DeleteByID(ctx context.Context, id int) error
 }
 
 func NewPostRepository(database *ent.Client) PostRepository {
@@ -51,7 +51,7 @@ func (r *IPostRepository) UpdateByID(ctx context.Context, id int, title string, 
 	return updatePost.Save(ctx)
 }
 
-func (r *IPostRepository) DelteByID(ctx context.Context, id int) error {
+func (r *IPostRepository) DeleteByID(ctx context.Context, id int) error {
 	return r.client.Post.DeleteOneID(id).
 		Exec(ctx)
 }
