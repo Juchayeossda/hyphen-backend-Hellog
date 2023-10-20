@@ -13,6 +13,7 @@ type CommentRepository interface {
 	QueryChilds(ctx context.Context, parent *ent.Comment) ([]*ent.Comment, error)
 	QueryParentsByPost(ctx context.Context, post *ent.Post) ([]*ent.Comment, error)
 	UpdateByID(ctx context.Context, id int, content string) (*ent.Comment, error)
+	DeleteByID(ctx context.Context, id int) error
 }
 
 func NewCommentRepository(database *ent.Client) CommentRepository {

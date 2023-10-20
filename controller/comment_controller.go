@@ -21,7 +21,7 @@ func (ctr *CommentController) Route(app *fiber.App) {
 	app.Post("/api/hellog/posts/:post_id/comments/comment", ctr.create)
 	app.Get("/api/hellog/posts/:post_id/comments", ctr.selectByID)
 	app.Patch("/api/hellog/posts/:post_id/comments/comment", ctr.updateByID)
-
+	app.Delete("/api/hellog/posts/:post_id/comments/comment", ctr.deleteByID)
 }
 
 func (ctr *CommentController) create(c *fiber.Ctx) error {
@@ -71,6 +71,21 @@ func (ctr *CommentController) updateByID(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(model.GeneralResponse{
 		Code:    fiber.StatusOK,
 		Message: "Success Updated",
+		Data:    nil,
+	})
+}
+
+func (ctr *CommentController) deleteByID(c *fiber.Ctx) error {
+	var clientRequest model.CommentDeleteByID
+
+	err := c.BodyParser(&clientRequest)
+	exception.Sniff(err)
+
+	ctr.CommentService.DeleteByID(c.Context(), &clientRequest)
+
+	return c.Status(fiber.StatusOK).JSON(model.GeneralResponse{
+		Code:    fiber.StatusOK,
+		Message: "Success Deleted",
 		Data:    nil,
 	})
 }

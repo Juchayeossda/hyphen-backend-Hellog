@@ -41,3 +41,7 @@ type CommentOfComment struct {
 
 	Author `json:"author"`
 }
+
+type CommentDeleteByID struct {
+	CommentID int `json:"comment_id"`
+}
